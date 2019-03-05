@@ -1,0 +1,99 @@
+package sort
+
+func BubbleSort(arr []int, len int)  {
+	for i := 0; i < len - 1; i++ {
+		for j := 0; j < len - 1 - i; j++ {
+			if arr[j] > arr[j + 1] {
+				arr[j], arr[j + 1] = arr[j + 1], arr[j]
+			}
+		}
+	}
+}
+
+func InsertionSort(arr []int, len int)  {
+	if len == 1 {return}
+
+	for i := 1; i < len; i++ {
+		temp := arr[i]
+		j := i - 1
+		for ; j >= 0; j-- {
+			if arr[j] > temp {
+				arr[j + 1] = arr[j]
+			} else {
+				break
+			}
+		}
+		arr[j + 1] = temp
+	}
+}
+
+func mergeSort(arr []int) []int {
+	if len(arr) < 2 {
+		return arr
+	}
+	i := len(arr) / 2
+	left := mergeSort(arr[0:i])
+	right := mergeSort(arr[i:])
+	result := merge(left, right)
+	return result
+}
+
+func merge(left, right []int) []int {
+	result := make([]int, 0, len(left) + len(right))
+	m, n := 0, 0 // left和right的index位置
+	l, r := len(left), len(right)
+	for m < l && n < r {
+		if left[m] > right[n] {
+			result = append(result, right[n])
+			n++
+			continue
+		}
+		result = append(result, left[m])
+		m++
+	}
+	result = append(result, right[n:]...) // 这里竟然没有报数组越界的异常？
+	result = append(result, left[m:]...)
+	return result
+}
+
+func quickSort(values []int, left int, right int) {
+	if left < right {
+
+		// 设置分水岭
+		temp := values[left]
+
+		// 设置哨兵
+		i, j := left, right
+		for {
+			// 从右向左找，找到第一个比分水岭小的数
+			for values[j] >= temp && i < j {
+				j--
+			}
+
+			// 从左向右找，找到第一个比分水岭大的数
+			for values[i] <= temp && i < j {
+				i++
+			}
+
+			// 如果哨兵相遇，则退出循环
+			if i >= j {
+				break
+			}
+
+			// 交换左右两侧的值
+			values[i], values[j] = values[j], values[i]
+		}
+
+		// 将分水岭移到哨兵相遇点
+		values[left] = values[i]
+		values[i] = temp
+
+		// 递归，左右两侧分别排序
+		quickSort(values, left, i-1)
+		quickSort(values, i+1, right)
+	}
+}
+
+func QuickSort(values []int) {
+	quickSort(values, 0, len(values)-1)
+}
